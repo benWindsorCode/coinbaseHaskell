@@ -34,7 +34,7 @@ calculateProfit entry exit = (value exit) - (value entry)
 totalProfit :: [Trade] -> Double
 totalProfit trades = _totalProfit [trade | trade <- trades, isOpen trade == False] (Just 0)
 
--- Use applicative property of Maybe and currying to fmap (<$>) the + operator over total and 'profit total' Maybe values
+-- Helper function: Use applicative property of Maybe and currying to fmap (<$>) the + operator over total and 'profit total' Maybe values
 _totalProfit :: [Trade] -> Maybe Double -> Double
 _totalProfit (trade:trades) total = _totalProfit trades ((+) <$> total <*> profit trade)
 _totalProfit [] total = case total of
