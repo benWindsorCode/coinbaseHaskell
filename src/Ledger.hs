@@ -7,14 +7,26 @@ module Ledger (
 
 import Types
 
-openTrade :: Order -> String -> Trade
-openTrade order newId = Trade newId order Nothing True Nothing
+-- Given a new Order and the list of current trades, updae the list with the new trade, incrementing the ID
+openTrade :: Order -> [Trade] -> [Trade]
+openTrade order [] = [createTrade 0 order]
+openTrade order trades = trades ++ [createTrade newId order]
+    where
+        newId = (tradeId $ last trades) + 1
 
-closeTrade :: Order -> Trade -> Trade
-closeTrade exit trade@(Trade _ entry _ _ _) = trade { exit = Just exit, isOpen = False, profit = Just (calculateProfit entry exit) }
+-- Close out a trade by adding an exit position and calculating profit, mark as no longer open
+-- We assume only one open trade at a time, so the trade to update is the last in the list
+closeTrade :: Order -> [Trade] -> [Trade]
+closeTrade exit trades = (init trades) ++ [trade { exit = Just exit, isOpen = False, profit = Just (calculateProfit currentEntry exit) }]
+        where
+            trade = last trades
+            currentEntry = entry trade
 
-createOrder :: String -> Double -> Double -> OrdType -> Order
-createOrder newId price quantity ordType = Order newId price quantity (price*quantity) ordType
+createOrder :: Int -> Double -> Double -> OrdType -> Side -> Order
+createOrder newOrderId price quantity ordType side = Order newOrderId price quantity (price*quantity) ordType side
+
+createTrade :: Int -> Order -> Trade
+createTrade newTradeId order = Trade newTradeId order Nothing True Nothing
 
 calculateProfit :: Order -> Order -> Double
 calculateProfit entry exit = (value exit) - (value entry)
