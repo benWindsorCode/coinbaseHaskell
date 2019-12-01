@@ -5,5 +5,9 @@ module Coinbase () where
 -- placeOrder
 
 -- getCurrentTick
+getCurrentTick :: Tick
 
 -- getOpenOrders
+
+updateTicks :: [Tick] -> [Tick]
+updateTicks currentTicks = currentTicks ++ [getCurrentTick]
