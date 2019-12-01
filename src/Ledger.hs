@@ -13,7 +13,7 @@ openTrade order [] = [createTrade 0 order]
 openTrade order trades = trades ++ [createTrade newId order]
     where
         newId = (tradeId $ last trades) + 1
-
+       
 -- Close out a trade by adding an exit position and calculating profit, mark as no longer open
 -- We assume only one open trade at a time, so the trade to update is the last in the list
 closeTrade :: Order -> [Trade] -> [Trade]
