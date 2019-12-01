@@ -31,6 +31,12 @@ createTrade newTradeId order = Trade newTradeId order Nothing True Nothing
 calculateProfit :: Order -> Order -> Double
 calculateProfit entry exit = (value exit) - (value entry)
 
+-- Given a list of trades, return the current trade if it exists
+-- todo: maybe make this do current active trade, more useful?
+currentTrade :: [Trade] -> Maybe Trade
+currentTrade [] = Nothing
+currentTrade trades = last trades
+
 totalProfit :: [Trade] -> Double
 totalProfit trades = _totalProfit [trade | trade <- trades, isOpen trade == False] (Just 0)
 
